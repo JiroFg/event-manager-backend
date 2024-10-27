@@ -1,0 +1,15 @@
+version: '3s'
+
+services:
+  web:
+    build: .
+    volumes:
+    - ./:/code:ro
+    environment:
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5433
+      - POSTGRES_DB=event-manager
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Secret125
+    ports:
+      - "8000:8000"
