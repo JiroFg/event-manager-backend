@@ -34,3 +34,6 @@ watchfiles==0.24.0
 websockets==13.1
 wheel==0.44.0
 psycopg2-binary==2.9.10
+passlib==1.7.4
+bcrypt==4.2.0
+python-jose==3.3.0

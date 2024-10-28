@@ -1,5 +1,11 @@
 CREATE TABLE users (
-	username VARCHAR(20),
-	email VARCHAR(20),
-	password VARCHAR(20)
+	user_id INT GENERATED ALWAYS AS IDENTITY,
+	username VARCHAR(20) NOT NULL,
+	email VARCHAR(30) NOT NULL,
+	password VARCHAR(50) NOT NULL,
+	PRIMARY KEY(user_id)
 );
+
+DROP TABLE users;
+
+SELECT * FROM users;
