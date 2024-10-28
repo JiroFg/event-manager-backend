@@ -6,4 +6,4 @@ To run this project follow the next steps:
 1. First of all you need to run the sql script in postgres, you can open it with pgAdmin4 or execute from shell
 
 2. Just execute this command (you need to have docker installed and running yet):
-    - ``docker-compose up -d --build``
+    > `docker-compose up -d --build`
