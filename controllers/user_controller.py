@@ -1,4 +1,3 @@
-import json
 from config.db_connection import PostgresConnection
 from schemas.user_schema import User
 from utils.hashing_helper import hash_password, verify_password
@@ -25,7 +24,8 @@ class UserController():
             user_id=row[0],
             username=row[1],
             email=row[2],
-            password=row[3]
+            password=row[3],
+            company_id=row[4]
         )
         # Validate the current password
         if not verify_password(password, current_user.password):
