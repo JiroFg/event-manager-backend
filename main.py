@@ -3,7 +3,7 @@ from fastapi import Depends, FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from config.db_connection import PostgresConnection
-from routers import user_router, login_router, catalog_router
+from routers import user_router, login_router, catalog_router, company_router
 from middlewares.token_middleware import validate_token_middleware
 
 
@@ -19,6 +19,7 @@ app.add_middleware(
 app.include_router(user_router.router)
 app.include_router(login_router.router)
 app.include_router(catalog_router.router)
+app.include_router(company_router.router)
 
 @app.get("/")
 def hello_world():
