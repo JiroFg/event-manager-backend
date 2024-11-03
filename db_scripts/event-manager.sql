@@ -48,11 +48,34 @@ CREATE TABLE users (
 	FOREIGN KEY(company_id) REFERENCES companies(company_id)
 );
 
+CREATE TABLE events (
+	event_id INT GENERATED ALWAYS AS IDENTITY,
+	name VARCHAR(60) NOT NULL,
+	start_date DATE NOT NULL,
+	end_date DATE NOT NULL,
+	start_time TIME NOT NULL,
+	end_time TIME NOT NULL,
+	tables INT NOT NULL,
+	PRIMARY KEY(event_id)
+);
+
+CREATE TABLE tables_event (
+	table_id INT GENERATED ALWAYS AS IDENTITY,
+	table_num INT NOT NULL,
+	event_id INT NOT NULL,
+	user_id INT,
+	PRIMARY KEY(table_id),
+	FOREIGN KEY(event_id) REFERENCES events(event_id),
+	FOREIGN KEY(user_id) REFERENCES users(user_id)	
+);
+
 -- If you want to delete any table
 DROP TABLE users;
 DROP TABLE companies;
 DROP TABLE states;
 DROP TABLE countries;
+DROP TABLE events;
+DROP TABLE tables_event;
 DROP TABLE user_types;
 
 -- If you want to see the tuples in a table
@@ -61,3 +84,5 @@ SELECT * FROM countries;
 SELECT * FROM states;
 SELECT * FROM companies;
 SELECT * FROM users;
+SELECT * FROM events;
+SELECT * FROM tables_events;
