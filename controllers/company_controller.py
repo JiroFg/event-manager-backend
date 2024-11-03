@@ -35,7 +35,7 @@ class CompanyController():
         self.conn.commit()
         rows_affected = self.cursor.rowcount
         self.cursor.close()
-        if(rows_affected > 0):
+        if rows_affected > 0:
             return {
                 "error": False,
                 "details": "Company created successfully"

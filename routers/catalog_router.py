@@ -1,14 +1,15 @@
 import traceback
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from controllers.catalog_controller import CatalogController
+from middlewares.token_middleware import validate_token_middleware
 
 router = APIRouter(
     prefix="/catalog",
     tags=["catalog"]
 )
 
-@router.get("/user-type")
+@router.get("/user-type", dependencies=[Depends(validate_token_middleware)])
 def get_user_types():
     try:
         catalog_controller = CatalogController()

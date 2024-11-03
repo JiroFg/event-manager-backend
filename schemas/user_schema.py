@@ -7,6 +7,17 @@ class User(BaseModel):
     username: str
     email: Annotated[str, Field(min_length=1, max_lenght=30, pattern=email_pettern)]
     password: Annotated[str, Field(min_length=1, max_lenght=30, pattern=password_pattern)]
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "username": "tilin",
+                    "email": "tilin@gmail.com",
+                    "password": "Tilin125"
+                }
+            ]
+        }
+    }
 
 class UserLogin(BaseModel):
     email: Annotated[str, Field(min_length=1, max_lenght=30, pattern=email_pettern)]
@@ -16,5 +27,8 @@ class UserDisplay(BaseModel):
     user_id: int
     username: str
     email: str
-    password: str
     company_id: Optional[int] = None
+
+class UserEdit(BaseModel):
+    user_id: int
+    company_id: int

@@ -15,6 +15,25 @@ class Company(BaseModel):
     address: Optional[Annotated[str, Field(min_length=1, max_length=255)]] = None
     state_id: int
     zip_code: Annotated[str, Field(pattern=zip_code_pattern)]
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "Chedrahui",
+                    "commercial_name": "Chedrahui",
+                    "logo_url": None,
+                    "phone": "1234567890",
+                    "rfc": "VECJ880326",
+                    "email": "rh@chedrahui.com.mx",
+                    "website_url": None,
+                    "employee_count": "1000",
+                    "address": None,
+                    "state_id": 15,
+                    "zip_code": "01000"
+                }
+            ]
+        }
+    }
 
 class CompanyDisplay(BaseModel):
     company_id: int
