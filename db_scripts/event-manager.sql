@@ -51,6 +51,7 @@ CREATE TABLE users (
 CREATE TABLE events (
 	event_id INT GENERATED ALWAYS AS IDENTITY,
 	name VARCHAR(60) NOT NULL,
+	description VARCHAR(255) NOT NULL,
 	start_date DATE NOT NULL,
 	end_date DATE NOT NULL,
 	start_time TIME NOT NULL,
@@ -85,4 +86,4 @@ SELECT * FROM states;
 SELECT * FROM companies;
 SELECT * FROM users;
 SELECT * FROM events;
-SELECT * FROM tables_events;
+SELECT * FROM tables_event;

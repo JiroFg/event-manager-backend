@@ -66,7 +66,7 @@ class UserController():
         self.conn.commit()
         rows_affected = self.cursor.rowcount
         self.cursor.close()
-        if(rows_affected > 0):
+        if rows_affected > 0:
             return {
                 "error": False,
                 "details": "User created successfully"
@@ -83,7 +83,6 @@ class UserController():
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         for row in rows:
-            print(row)
             user = UserDisplay(
                 user_id=row[0],
                 username=row[1],
