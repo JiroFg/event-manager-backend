@@ -1,6 +1,6 @@
 from fastapi.encoders import jsonable_encoder
 from config.db_connection import PostgresConnection
-from schemas.event_schema import Event, EventDisplay
+from schemas.event_schema import Event, EventDisplay, EventEdit
 
 
 class EventController():
@@ -80,4 +80,66 @@ class EventController():
             return {
                 "error": True,
                 "details": "Event couldn't be created"
+            }
+    
+    def update(self, event: EventEdit):
+        # Verify if the event exists
+        query = "SELECT * FROM events WHERE event_id = %s"
+        self.cursor.execute(query, (event.event_id,))
+        row = self.cursor.fetchone()
+        if not row:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Event not found"
+            }
+        # If the event exists delete all tables
+        query = "DELETE FROM tables_event WHERE event_id = %s"
+        self.cursor.execute(query, (event.event_id,))
+        self.conn.commit()
+        row_affected = self.cursor.rowcount
+        if not row_affected > 0:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Tables couldn't be deleted"
+            }
+        # Update info
+        query = "UPDATE events SET name = COALESCE(%s, name), description = COALESCE(%s, description), start_date = COALESCE(%s, start_date), end_date = COALESCE(%s, end_date), start_time = COALESCE(%s, start_time), end_time = COALESCE(%s, end_time), tables = COALESCE(%s, tables) WHERE event_id = %s"
+        self.cursor.execute(query, (
+            event.name,
+            event.description,
+            event.start_date,
+            event.end_date,
+            event.start_time,
+            event.end_time,
+            event.tables,
+            event.event_id
+        ))
+        self.conn.commit()
+        row_affected = self.cursor.rowcount
+        if not row_affected > 0:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Event couldn't be updated"
+            }
+        # Create new tables
+        table_list = []
+        for table_num in range(1, event.tables + 1):
+            table_list.append((table_num, event.event_id))
+        query = "INSERT INTO tables_event (table_num, event_id) VALUES (%s, %s)"
+        self.cursor.executemany(query, table_list)
+        self.conn.commit()
+        row_affected = self.cursor.rowcount
+        self.cursor.close()
+        if row_affected > 0:
+            return {
+                "error": False,
+                "details": "Event updated successfully"
+            }
+        else:
+            return {
+                "error": True,
+                "details": "Event couldn't be updated"
             }
