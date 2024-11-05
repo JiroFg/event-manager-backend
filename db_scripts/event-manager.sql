@@ -41,7 +41,7 @@ CREATE TABLE users (
 	username VARCHAR(20) NOT NULL,
 	email VARCHAR(30) NOT NULL,
 	password VARCHAR(60) NOT NULL,
-	user_type_id INT,
+	user_type_id INT NOT NULL,
 	company_id INT,
 	PRIMARY KEY(user_id),
 	FOREIGN KEY(user_type_id) REFERENCES user_types(user_type_id),
@@ -57,6 +57,7 @@ CREATE TABLE events (
 	start_time TIME NOT NULL,
 	end_time TIME NOT NULL,
 	tables INT NOT NULL,
+	img_url VARCHAR(255),
 	PRIMARY KEY(event_id)
 );
 
@@ -70,14 +71,7 @@ CREATE TABLE tables_event (
 	FOREIGN KEY(user_id) REFERENCES users(user_id)	
 );
 
--- If you want to delete any table
-DROP TABLE users;
-DROP TABLE companies;
-DROP TABLE states;
-DROP TABLE countries;
-DROP TABLE events;
-DROP TABLE tables_event;
-DROP TABLE user_types;
+INSERT INTO users (username, email, password, user_type_id) VALUES ('admin', 'admin@gmail.com', 'Secret125', 2);
 
 -- If you want to see the tuples in a table
 SELECT * FROM user_types;
@@ -87,3 +81,12 @@ SELECT * FROM companies;
 SELECT * FROM users;
 SELECT * FROM events;
 SELECT * FROM tables_event;
+
+-- If you want to delete any table
+DROP TABLE tables_event;
+DROP TABLE users;
+DROP TABLE companies;
+DROP TABLE states;
+DROP TABLE countries;
+DROP TABLE events;
+DROP TABLE user_types;

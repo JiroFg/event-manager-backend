@@ -7,7 +7,6 @@ load_dotenv()
 def generate_token(payload: dict):
     secret = os.getenv("JWT_SECRET")
     algorithm = os.getenv("JWT_ALGORITHM")
-    print(algorithm)
     return jwt.encode(payload, secret, algorithm=algorithm)
 
 def validate_token(token: str):

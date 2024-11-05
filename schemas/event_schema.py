@@ -1,6 +1,7 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from pydantic import BaseModel, Field, model_validator
 from datetime import date, time
+from utils.regex_helper import url_pattern
 
 class Event(BaseModel):
     name: Annotated[str, Field(min_length=1, max_length=60)]
@@ -10,6 +11,7 @@ class Event(BaseModel):
     start_time: time
     end_time: time
     tables: Annotated[int, Field(gt=0, lt=500)]
+    img_url: Optional[Annotated[str, Field(min_length=1, max_length=255, pattern=url_pattern)]] = None
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -20,7 +22,8 @@ class Event(BaseModel):
                     "end_date": "2024-11-11",
                     "start_time": "10:00:00",
                     "end_time": "18:00:00",
-                    "tables": 1
+                    "tables": 1,
+                    "img_url": "https://www.sopitas.com/wp-content/uploads/2023/12/historia-origen-detras-meme-artimonki-imagen-arctic-monkeys-ontario.jpeg?resize=1024,1024"
                 }
             ]
         }
@@ -45,6 +48,7 @@ class EventDisplay(BaseModel):
     start_time: time
     end_time: time
     tables: int
+    img_url: str
 
 class EventEdit(BaseModel):
     event_id: Annotated[int, Field(gt=0)]
@@ -55,6 +59,7 @@ class EventEdit(BaseModel):
     start_time: time
     end_time: time
     tables: Annotated[int, Field(gt=0, lt=500)]
+    img_url: Optional[Annotated[str, Field(min_length=1, max_length=255, pattern=url_pattern)]] = None
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -66,7 +71,8 @@ class EventEdit(BaseModel):
                     "end_date": "2024-11-11",
                     "start_time": "10:00:00",
                     "end_time": "18:00:00",
-                    "tables": 1
+                    "tables": 1,
+                    "img_url": "https://www.sopitas.com/wp-content/uploads/2023/12/historia-origen-detras-meme-artimonki-imagen-arctic-monkeys-ontario.jpeg?resize=1024,1024"
                 }
             ]
         }

@@ -27,6 +27,7 @@ class UserDisplay(BaseModel):
     user_id: int
     username: str
     email: str
+    user_type_id: int
     company_id: Optional[int] = None
 
 class UserEdit(BaseModel):

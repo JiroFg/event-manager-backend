@@ -25,7 +25,8 @@ class UserController():
             user_id=row[0],
             username=row[1],
             email=row[2],
-            company_id=row[4]
+            user_type_id=row[4],
+            company_id=row[5]
         )
         # Validate the current password
         if not verify_password(password, row[3]):
@@ -39,7 +40,8 @@ class UserController():
             token = generate_token({
                 "user_id": current_user.user_id,
                 "username": current_user.username,
-                "email": current_user.email
+                "email": current_user.email,
+                "user_type_id": current_user.user_type_id
             })
             return {
                 "access_token": token,
@@ -57,7 +59,7 @@ class UserController():
                 "details": "Email already registered"
             }
         # Create the new user
-        query = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
+        query = "INSERT INTO users (username, email, password, user_type_id) VALUES (%s, %s, %s, 1)"
         self.cursor.execute(query, (
             new_user.username,
             new_user.email,
@@ -76,10 +78,41 @@ class UserController():
                 "error": True,
                 "details": "User couldn't be created"
             }
+    
+    def create_admin(self, new_user: User):
+        # Validate if user with the email already exist
+        query = "SELECT * FROM users WHERE email = %s"
+        self.cursor.execute(query, (new_user.email,))
+        row = self.cursor.fetchone()
+        if row:
+            return {
+                "error": True,
+                "details": "Email already registered"
+            }
+        # Create the new user
+        query = "INSERT INTO users (username, email, password, user_type_id) VALUES (%s, %s, %s, 2)"
+        self.cursor.execute(query, (
+            new_user.username,
+            new_user.email,
+            hash_password(new_user.password)
+        ))
+        self.conn.commit()
+        rows_affected = self.cursor.rowcount
+        self.cursor.close()
+        if rows_affected > 0:
+            return {
+                "error": False,
+                "details": "Admin created successfully"
+            }
+        else:
+            return {
+                "error": True,
+                "details": "Admin couldn't be created"
+            }
 
     def get_all(self):
         result = []
-        query = "SELECT user_id, username, email, company_id FROM users"
+        query = "SELECT user_id, username, email, user_type_id, company_id FROM users"
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         for row in rows:
@@ -87,21 +120,23 @@ class UserController():
                 user_id=row[0],
                 username=row[1],
                 email=row[2],
-                company_id=row[3]
+                user_type_id=row[3],
+                company_id=row[4]
             )
             result.append(user)
         self.cursor.close()
         return jsonable_encoder(result)
 
     def get(self, user_id: int):
-        query = "SELECT user_id, username, email, company_id FROM users WHERE user_id=%s"
+        query = "SELECT user_id, username, email, user_type_id, company_id FROM users WHERE user_id = %s"
         self.cursor.execute(query, (user_id,))
         row = self.cursor.fetchone()
         user = UserDisplay(
             user_id=row[0],
             username=row[1],
             email=row[2],
-            company_id=row[3]
+            user_type_id=row[3],
+            company_id=row[4]
         )
         return jsonable_encoder(user)
 
