@@ -26,7 +26,7 @@ def create_user(new_user: User):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-@router.post("/admin/", dependencies=[Depends(validate_token_admin_middleware)])
+@router.post("/admin/", dependencies=[Depends(validate_token_admin_middleware)], tags=["admin"])
 def create_admin(new_user: User):
     try:
         user_controller = UserController()
@@ -42,7 +42,7 @@ def create_admin(new_user: User):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-@router.get("/", dependencies=[Depends(validate_token_admin_middleware)])
+@router.get("/", dependencies=[Depends(validate_token_admin_middleware)], tags=["admin"])
 def get_all_users():
     try:
         user_controller = UserController()
@@ -94,6 +94,22 @@ def update_user(user_edit: UserEdit):
     try:
         user_controller = UserController()
         result = user_controller.update(user_edit)
+        return JSONResponse(
+            content=result,
+            status_code=status.HTTP_200_OK
+        )
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse(
+            content={"error": True, "details": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@router.delete("/{user_id}", dependencies=[Depends(validate_token_middleware)])
+def deactivate_user(user_id: int):
+    try:
+        user_controller = UserController()
+        result = user_controller.deactive(user_id)
         return JSONResponse(
             content=result,
             status_code=status.HTTP_200_OK

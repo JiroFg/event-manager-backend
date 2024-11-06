@@ -43,6 +43,7 @@ CREATE TABLE users (
 	password VARCHAR(60) NOT NULL,
 	user_type_id INT NOT NULL,
 	company_id INT,
+	is_active BOOLEAN NOT NULL,
 	PRIMARY KEY(user_id),
 	FOREIGN KEY(user_type_id) REFERENCES user_types(user_type_id),
 	FOREIGN KEY(company_id) REFERENCES companies(company_id)
@@ -70,8 +71,6 @@ CREATE TABLE tables_event (
 	FOREIGN KEY(event_id) REFERENCES events(event_id),
 	FOREIGN KEY(user_id) REFERENCES users(user_id)	
 );
-
-INSERT INTO users (username, email, password, user_type_id) VALUES ('admin', 'admin@gmail.com', 'Secret125', 2);
 
 -- If you want to see the tuples in a table
 SELECT * FROM user_types;

@@ -13,7 +13,7 @@ class User(BaseModel):
                 {
                     "username": "tilin",
                     "email": "tilin@gmail.com",
-                    "password": "Tilin125"
+                    "password": "Tilin125",
                 }
             ]
         }
@@ -29,7 +29,9 @@ class UserDisplay(BaseModel):
     email: str
     user_type_id: int
     company_id: Optional[int] = None
+    is_active: bool
 
 class UserEdit(BaseModel):
     user_id: int
-    company_id: int
+    company_id: Optional[int] = None
+    is_active: Optional[bool] = None

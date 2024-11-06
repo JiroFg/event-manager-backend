@@ -1,8 +1,9 @@
 import traceback
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from controllers.event_controller import EventController
 from schemas.event_schema import Event, EventEdit
+from middlewares.token_middleware import validate_token_admin_middleware
 
 router = APIRouter(prefix="/event", tags=["event"])
 
@@ -38,7 +39,7 @@ def get_event(event_id: int):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-@router.post("/")
+@router.post("/", dependencies=[Depends(validate_token_admin_middleware)], tags=["admin"])
 def create_event(new_event: Event):
     try:
         event_controller = EventController()
@@ -54,7 +55,7 @@ def create_event(new_event: Event):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-@router.put("/")
+@router.put("/", dependencies=[Depends(validate_token_admin_middleware)], tags=["admin"])
 def edit_event(event: EventEdit):
     try:
         event_controller = EventController()

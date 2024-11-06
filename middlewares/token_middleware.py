@@ -22,4 +22,4 @@ def validate_token_admin_middleware(payload: Annotated[dict, Depends(validate_to
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials"
         )
-    return
+    return payload

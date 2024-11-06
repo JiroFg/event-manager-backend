@@ -15,7 +15,7 @@ class UserController():
         query = "SELECT * FROM users WHERE email = %s"
         self.cursor.execute(query, (email,))
         row = self.cursor.fetchone()
-        if not row:
+        if not row or row[6] == False:
             self.cursor.close()
             return {
                 "error": True,
@@ -26,11 +26,12 @@ class UserController():
             username=row[1],
             email=row[2],
             user_type_id=row[4],
-            company_id=row[5]
+            company_id=row[5],
+            is_active=row[6]
         )
         # Validate the current password
+        self.cursor.close()
         if not verify_password(password, row[3]):
-            self.cursor.close()
             return {
                 "error": True,
                 "details": "Email or password invalid"
@@ -59,7 +60,7 @@ class UserController():
                 "details": "Email already registered"
             }
         # Create the new user
-        query = "INSERT INTO users (username, email, password, user_type_id) VALUES (%s, %s, %s, 1)"
+        query = "INSERT INTO users (username, email, password, user_type_id, is_active) VALUES (%s, %s, %s, 1, 'TRUE')"
         self.cursor.execute(query, (
             new_user.username,
             new_user.email,
@@ -90,7 +91,7 @@ class UserController():
                 "details": "Email already registered"
             }
         # Create the new user
-        query = "INSERT INTO users (username, email, password, user_type_id) VALUES (%s, %s, %s, 2)"
+        query = "INSERT INTO users (username, email, password, user_type_id, is_active) VALUES (%s, %s, %s, 2, 'TRUE')"
         self.cursor.execute(query, (
             new_user.username,
             new_user.email,
@@ -112,7 +113,7 @@ class UserController():
 
     def get_all(self):
         result = []
-        query = "SELECT user_id, username, email, user_type_id, company_id FROM users"
+        query = "SELECT user_id, username, email, user_type_id, company_id, is_active FROM users"
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         for row in rows:
@@ -121,29 +122,39 @@ class UserController():
                 username=row[1],
                 email=row[2],
                 user_type_id=row[3],
-                company_id=row[4]
+                company_id=row[4],
+                is_active=row[5]
             )
             result.append(user)
         self.cursor.close()
         return jsonable_encoder(result)
 
     def get(self, user_id: int):
-        query = "SELECT user_id, username, email, user_type_id, company_id FROM users WHERE user_id = %s"
+        query = "SELECT user_id, username, email, user_type_id, company_id, is_active FROM users WHERE user_id = %s"
         self.cursor.execute(query, (user_id,))
         row = self.cursor.fetchone()
+        if not row:
+            return {
+                "error": True,
+                "details": "User not found"
+            }
         user = UserDisplay(
             user_id=row[0],
             username=row[1],
             email=row[2],
             user_type_id=row[3],
-            company_id=row[4]
+            company_id=row[4],
+            is_active=row[5]
         )
+        self.cursor.close()
         return jsonable_encoder(user)
 
     def update(self, user_edit: UserEdit):
-        query = "UPDATE users SET company_id = COALESCE(%s, company_id) WHERE user_id=%s"
-        self.cursor.execute(query, (user_edit.company_id, user_edit.user_id))
+        query = "UPDATE users SET company_id = COALESCE(%s, company_id), is_active = COALESCE(%s, is_active) WHERE user_id=%s"
+        self.cursor.execute(query, (user_edit.company_id, user_edit.is_active, user_edit.user_id))
+        self.conn.commit()
         rows_affected = self.cursor.rowcount
+        self.cursor.close()
         if rows_affected > 0:
             return {
                 "error": False,
@@ -155,5 +166,18 @@ class UserController():
                 "details": "User couldn't be updated"
             }
 
-    def delete(self):
-        pass
+    def deactive(self, user_id: int):
+        query = "UPDATE users SET is_active = 'FALSE' WHERE user_id = %s"
+        self.cursor.execute(query, (user_id,))
+        self.conn.commit()
+        row_affected = self.cursor.rowcount
+        if row_affected > 0:
+            return {
+                "error": False,
+                "details": "User deactivate successfully"
+            }
+        else:
+            return {
+                "error": True,
+                "details": "User couldn't be deactivated"
+            }
