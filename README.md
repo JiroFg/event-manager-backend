@@ -7,3 +7,6 @@ To run this project follow the next steps:
 
 2. Just execute this command (you need to have docker installed and running yet):
     > `docker-compose up -d --build`
+
+To execute testing, execute the next command:
+    > `docker-compose exec web pytest`
