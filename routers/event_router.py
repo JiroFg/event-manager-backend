@@ -70,3 +70,19 @@ def edit_event(event: EventEdit):
             content={"error": True, "details": str(e)},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+@router.delete("/{event_id}", dependencies=[Depends(validate_token_admin_middleware)], tags=["admin"])
+def delete_event(event_id: int):
+    try:
+        event_controller = EventController()
+        result = event_controller.delete(event_id)
+        return JSONResponse(
+            content=result,
+            status_code=status.HTTP_200_OK
+        )
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse(
+            content={"error": True, "details": str(e)},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

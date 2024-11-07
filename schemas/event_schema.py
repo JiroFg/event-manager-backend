@@ -1,6 +1,6 @@
 from typing import Annotated, Optional
 from pydantic import BaseModel, Field, model_validator
-from datetime import date, time
+from datetime import date, time, timedelta
 from utils.regex_helper import url_pattern
 
 class Event(BaseModel):
@@ -18,8 +18,8 @@ class Event(BaseModel):
                 {
                     "name": "Expoanimex",
                     "description": "Expo sobre anime y videojuegos",
-                    "start_date": "2024-11-10",
-                    "end_date": "2024-11-11",
+                    "start_date": date.today(),
+                    "end_date": date.today() + timedelta(days=2),
                     "start_time": "10:00:00",
                     "end_time": "18:00:00",
                     "tables": 1,

@@ -72,6 +72,15 @@ CREATE TABLE tables_event (
 	FOREIGN KEY(user_id) REFERENCES users(user_id)	
 );
 
+create table user_event (
+	user_event_id int generated always as identity,
+	user_id int not null,
+	event_id int not null,
+	primary key(user_event_id),
+	foreign key(user_id) references users(user_id),
+	foreign key(event_id) references events(event_id)
+);
+
 -- If you want to see the tuples in a table
 SELECT * FROM user_types;
 SELECT * FROM countries;

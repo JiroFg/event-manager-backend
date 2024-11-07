@@ -75,10 +75,10 @@ class EventController():
             table_list.append((table_num, last_id))
         query = "INSERT INTO tables_event (table_num, event_id) VALUES (%s, %s)"
         self.cursor.executemany(query, table_list)
-        self.conn.commit()
         row_affected = self.cursor.rowcount
         self.cursor.close()
         if row_affected > 0:
+            self.conn.commit()
             return {
                 "error": False,
                 "details": "Event created successfully"
@@ -136,10 +136,10 @@ class EventController():
             table_list.append((table_num, event.event_id))
         query = "INSERT INTO tables_event (table_num, event_id) VALUES (%s, %s)"
         self.cursor.executemany(query, table_list)
-        self.conn.commit()
         row_affected = self.cursor.rowcount
         self.cursor.close()
         if row_affected > 0:
+            self.conn.commit()
             return {
                 "error": False,
                 "details": "Event updated successfully"
@@ -148,4 +148,32 @@ class EventController():
             return {
                 "error": True,
                 "details": "Event couldn't be updated"
+            }
+    
+    def delete(self, event_id: int):
+        # delete tables
+        query = "DELETE FROM tables_event WHERE event_id = %s"
+        self.cursor.execute(query, (event_id,))
+        row_affected = self.cursor.rowcount
+        if not row_affected > 0:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Tables couldn't be deleted"
+            }
+        # delete event
+        query = "DELETE FROM events WHERE event_id = %s"
+        self.cursor.execute(query, (event_id,))
+        row_affected = self.cursor.rowcount
+        self.cursor.close()
+        if row_affected > 0:
+            self.conn.commit()
+            return {
+                "error": False,
+                "details": "Event deleted successfully"
+            }
+        else:
+            return {
+                "error": True,
+                "details": "Event couldn't be delete"
             }
