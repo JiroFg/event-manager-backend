@@ -66,10 +66,10 @@ class UserController():
             new_user.email,
             hash_password(new_user.password)
         ))
-        self.conn.commit()
         rows_affected = self.cursor.rowcount
         self.cursor.close()
         if rows_affected > 0:
+            self.conn.commit()
             return {
                 "error": False,
                 "details": "User created successfully"
@@ -150,6 +150,16 @@ class UserController():
         return jsonable_encoder(user)
 
     def update(self, user_edit: UserEdit):
+        # validate if user exists
+        query = "SELECT * FROM users WHERE user_id = %s"
+        self.cursor.execute(query, (user_edit.user_id,))
+        row = self.cursor.fetchone()
+        if not row:
+            return {
+                "error": True,
+                "details": "User not found"
+            }
+        # update user
         query = "UPDATE users SET company_id = COALESCE(%s, company_id), is_active = COALESCE(%s, is_active) WHERE user_id=%s"
         self.cursor.execute(query, (user_edit.company_id, user_edit.is_active, user_edit.user_id))
         self.conn.commit()

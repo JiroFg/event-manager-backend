@@ -72,11 +72,12 @@ CREATE TABLE tables_event (
 	FOREIGN KEY(user_id) REFERENCES users(user_id)	
 );
 
-create table user_event (
-	user_event_id int generated always as identity,
+create table user_event_participation (
+	participation_id int generated always as identity,
 	user_id int not null,
 	event_id int not null,
-	primary key(user_event_id),
+	accepted BOOLEAN NOT NULL,
+	primary key(participation_id),
 	foreign key(user_id) references users(user_id),
 	foreign key(event_id) references events(event_id)
 );
@@ -89,8 +90,10 @@ SELECT * FROM companies;
 SELECT * FROM users;
 SELECT * FROM events;
 SELECT * FROM tables_event;
+SELECT * FROM user_event_participation;
 
 -- If you want to delete any table
+DROP TABLE user_event_participation;
 DROP TABLE tables_event;
 DROP TABLE users;
 DROP TABLE companies;
