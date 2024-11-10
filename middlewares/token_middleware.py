@@ -17,7 +17,7 @@ def validate_token_middleware(token: Annotated[str, Depends(oauth2_scheme)]):
 
 def validate_token_admin_middleware(payload: Annotated[dict, Depends(validate_token_middleware)]):
     user_type = payload.get("user_type_id")
-    if user_type != 2:
+    if user_type != 3:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials"

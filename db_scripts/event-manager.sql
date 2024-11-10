@@ -82,6 +82,34 @@ create table user_event_participation (
 	foreign key(event_id) references events(event_id)
 );
 
+create table products (
+	product_id int generated always as identity,
+	name varchar(50) not null,
+	description varchar(400) not null,
+	img_url varchar(255),
+	owner_id int not null,
+	primary key(product_id),
+	foreign key(owner_id) references users(user_id)
+);
+
+create table schedules (
+	schedule_id int generated always as identity,
+	event_id int not null,
+	start_time time not null,
+	end_time time not null,
+	primary key(schedule_id),
+	foreign key(event_id) references events(event_id)
+);
+
+create table appointments (
+	appointment_id int generated always as identity,
+	buyer_id int not null,
+	exhibitor_id int not null,
+	schedule_id int not null,
+	primary key(appointment_id),
+	foreign key(schedule_id) references schedules(schedule_id)
+);
+
 -- If you want to see the tuples in a table
 SELECT * FROM user_types;
 SELECT * FROM countries;
@@ -91,8 +119,14 @@ SELECT * FROM users;
 SELECT * FROM events;
 SELECT * FROM tables_event;
 SELECT * FROM user_event_participation;
+select * from products;
+select * from schedules;
+select * from appointments;
 
 -- If you want to delete any table
+drop table products;
+drop table appointmets;
+drop table schedules; 
 DROP TABLE user_event_participation;
 DROP TABLE tables_event;
 DROP TABLE users;
