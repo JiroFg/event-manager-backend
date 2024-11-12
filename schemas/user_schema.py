@@ -7,6 +7,7 @@ class User(BaseModel):
     username: str
     email: Annotated[str, Field(min_length=1, max_lenght=30, pattern=email_pettern)]
     password: Annotated[str, Field(min_length=1, max_lenght=30, pattern=password_pattern)]
+    user_type_id: Annotated[int, Field(gt=0)]
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -14,6 +15,7 @@ class User(BaseModel):
                     "username": "tilin",
                     "email": "tilin@gmail.com",
                     "password": "Tilin125",
+                    "user_type_id": 1
                 }
             ]
         }
@@ -33,5 +35,6 @@ class UserDisplay(BaseModel):
 
 class UserEdit(BaseModel):
     user_id: int
-    company_id: Optional[int] = None
+    user_type_id: Optional[Annotated[int, Field(gt=0)]] = None
+    company_id: Optional[Annotated[int, Field(gt=0)]] = None
     is_active: Optional[bool] = None

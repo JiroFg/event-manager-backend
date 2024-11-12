@@ -59,6 +59,7 @@ CREATE TABLE events (
 	end_time TIME NOT NULL,
 	tables INT NOT NULL,
 	img_url VARCHAR(255),
+	meeting_duration int not null,
 	PRIMARY KEY(event_id)
 );
 
@@ -97,16 +98,17 @@ create table schedules (
 	event_id int not null,
 	start_time time not null,
 	end_time time not null,
+	day date not null,
 	primary key(schedule_id),
 	foreign key(event_id) references events(event_id)
 );
 
-create table appointments (
-	appointment_id int generated always as identity,
+create table meetings (
+	meeting_id int generated always as identity,
 	buyer_id int not null,
 	exhibitor_id int not null,
 	schedule_id int not null,
-	primary key(appointment_id),
+	primary key(meeting_id),
 	foreign key(schedule_id) references schedules(schedule_id)
 );
 
@@ -121,11 +123,11 @@ SELECT * FROM tables_event;
 SELECT * FROM user_event_participation;
 select * from products;
 select * from schedules;
-select * from appointments;
+select * from meetings;
 
 -- If you want to delete any table
 drop table products;
-drop table appointmets;
+drop table meetings;
 drop table schedules; 
 DROP TABLE user_event_participation;
 DROP TABLE tables_event;

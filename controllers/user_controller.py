@@ -55,16 +55,24 @@ class UserController():
         self.cursor.execute(query, (new_user.email,))
         row = self.cursor.fetchone()
         if row:
+            self.cursor.close()
             return {
                 "error": True,
                 "details": "Email already registered"
             }
         # Create the new user
-        query = "INSERT INTO users (username, email, password, user_type_id, is_active) VALUES (%s, %s, %s, 1, 'TRUE')"
+        query = "INSERT INTO users (username, email, password, user_type_id, is_active) VALUES (%s, %s, %s, %s, 'TRUE')"
+        if new_user.user_type_id == 3:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Invalid credentials"
+            }
         self.cursor.execute(query, (
             new_user.username,
             new_user.email,
-            hash_password(new_user.password)
+            hash_password(new_user.password),
+            new_user.user_type_id
         ))
         rows_affected = self.cursor.rowcount
         self.cursor.close()
@@ -160,8 +168,13 @@ class UserController():
                 "details": "User not found"
             }
         # update user
-        query = "UPDATE users SET company_id = COALESCE(%s, company_id), is_active = COALESCE(%s, is_active) WHERE user_id=%s"
-        self.cursor.execute(query, (user_edit.company_id, user_edit.is_active, user_edit.user_id))
+        if user_edit.user_type_id == 3:
+            return {
+                "error": True,
+                "details": "Invalid credentials"
+            }
+        query = "UPDATE users SET user_type_id = COALESCE(%s, user_type_id) company_id = COALESCE(%s, company_id), is_active = COALESCE(%s, is_active) WHERE user_id=%s"
+        self.cursor.execute(query, (user_edit.user_type_id ,user_edit.company_id, user_edit.is_active, user_edit.user_id))
         self.conn.commit()
         rows_affected = self.cursor.rowcount
         self.cursor.close()
