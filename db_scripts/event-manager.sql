@@ -108,8 +108,10 @@ create table meetings (
 	buyer_id int not null,
 	exhibitor_id int not null,
 	schedule_id int not null,
+	event_id int not null,
 	primary key(meeting_id),
-	foreign key(schedule_id) references schedules(schedule_id)
+	foreign key(schedule_id) references schedules(schedule_id),
+	foreign key(event_id) references events(event_id)
 );
 
 -- If you want to see the tuples in a table

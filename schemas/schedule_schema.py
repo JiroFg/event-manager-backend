@@ -1,6 +1,6 @@
 from typing import Annotated
 from pydantic import BaseModel, Field
-from datetime import time
+from datetime import time, date
 
 class Schedule(BaseModel):
     event_id: Annotated[int, Field(gt=0)]
@@ -12,3 +12,4 @@ class ScheduleDisplay(BaseModel):
     event_id: int
     start_time: time
     end_time: time
+    day: date

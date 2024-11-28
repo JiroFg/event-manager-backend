@@ -106,3 +106,32 @@ class ProductController():
                 "error": True,
                 "details": "Product couldn't be updated"
             }
+    
+    def delete_product(self, product_id: int):
+        # validate if product exists
+        query = "SELECT * FROM products WHERE product_id = %s"
+        self.cursor.execute(query, (product_id,))
+        row = self.cursor.fetchone()
+        if not row:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Product doesn't exist"
+            }
+        # delete product
+        query = "DELETE FROM products WHERE product_id = %s"
+        self.cursor.execute(query, (product_id,))
+        row_affected = self.cursor.rowcount
+        if not row_affected > 0:
+            self.cursor.close()
+            return {
+                "error": True,
+                "details": "Product couldn't be deleted"
+            }
+        else:
+            self.conn.commit()
+            self.cursor.close()
+            return {
+                "error": False,
+                "details": "Product deleted successfully"
+            }
